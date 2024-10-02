@@ -74,7 +74,7 @@ app.post("/login", async (req, res) => {
 // middleware to verifytoken
 
 function verifytoken(req, res, next) {
-  const tokenfromclient = req.headers["authorization"];
+  const tokenfromclient = req.headers.authorization;
   if (!tokenfromclient)
     return res.status(401).json({
       status: 401,
