@@ -27,14 +27,49 @@ app.post("/register", async (req, res) => {
   });
 });
 
-//login route
+//login route (for generating JWT)
 
-app.post("/post", (req, res) => {
-  const { username } = req.body;
-  if (!username) {
-    return res.status(404).send("username is not found");
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const passwordGivenByUser = password;
+  if (!username || !password) {
+    return res.status(400).json({
+      message: "username or password is required",
+    });
   }
-  res.status(200).send(username);
+  //   find the user in the database (using array here)
+  const user = users.find((u) => u.username === username);
+  //find() method returns the value of the first element that passes a test.
+  if (!user) {
+    return res.status(404).json({
+      status: 404,
+      message: "User not found",
+    });
+  }
+  const isValidPassword = await bycrypt.compare(
+    passwordGivenByUser,
+    user.password
+  );
+  if (!isValidPassword)
+    return res.status(401).json({
+      status: 401,
+      message: "Invalid password",
+    });
+
+  // generate JWT
+  const token = jwt.sign(
+    {
+      username: user.username,
+      tokenby: "sujancodes",
+    },
+    JWT_SECRET_KEY,
+    { expiresIn: "1h" }
+  );
+  res.status(200).json({
+    status: 200,
+    token,
+    message: "JWT token generated",
+  });
 });
 
 app.listen(3000, () => {
