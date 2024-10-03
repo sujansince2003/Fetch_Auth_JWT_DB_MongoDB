@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>making request to server1</title>
+</head>
+
+<body>
+
+    <button onclick="getData()">Get Data</button>
+    <ul class="list"></ul>
+    <script>
+        const list = document.querySelector(".list");
+        let data;
+
+
+
+        async function getData() {
+            const response = await fetch("https://fakerapi.it/api/v2/persons");
+            const personsData = await response.json();
+            console.log(personsData.data);
+            data = personsData.data;
+            data.forEach((d) => {
+                console.log(d.firstname)
+                const item = document.createElement("li");
+                item.textContent = d.firstname;
+                list.appendChild(item);
+            })
+        }
+
+
+    </script>
+</body>
+
+</html>
