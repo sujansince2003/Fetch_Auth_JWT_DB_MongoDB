@@ -25,7 +25,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    unique: true,
   },
   purchasedcourse: [
     {
@@ -43,8 +42,13 @@ const adminSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    unique: true,
   },
+  createdCourses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    },
+  ],
 });
 const courseSchema = new mongoose.Schema({
   title: {
@@ -55,10 +59,13 @@ const courseSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
-    unique: true,
   },
   description: {
     type: String,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Admin",
   },
 });
 
