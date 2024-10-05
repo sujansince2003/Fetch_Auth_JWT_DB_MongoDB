@@ -1,23 +1,22 @@
-const { Admin } = require("../db/db");
+const jwt = require("jsonwebtoken");
 
 async function adminMiddleware(req, res, next) {
-  const { username, password } = req.headers;
+  const token = req.headers.authorization;
 
-  if (!username || !password) {
-    return res.send("username or password is required");
+  if (!token) {
+    return res.send("Token is not received");
   }
 
   try {
-    const isUserExist = await Admin.findOne({
-      username: username,
-      password: password,
-    });
-    if (!isUserExist) {
-      return res.status(403).json({
-        message: "user doesnot exist",
+    const decodedData = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+    req.adminData = decodedData;
+    if (decodedData.role === "admin") {
+      next();
+    } else {
+      res.status(403).json({
+        message: "authorization failed:You are not authorized to access this",
       });
     }
-    next();
   } catch (error) {
     return res.status(500).json({
       status: 500,
