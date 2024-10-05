@@ -86,7 +86,6 @@ router.get("/purchasedcourse", userMiddleware, async (req, res) => {
 
   return res.status(200).json({
     purchasedcourses,
-    userdetails: user,
   });
 });
 //export router
